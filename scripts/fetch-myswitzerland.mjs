@@ -122,7 +122,10 @@ function normalize(feature, type) {
     descentM: props.descent ?? props.elevationLoss ?? null,
     type,
     imageUrl: props.images?.[0]?.url ?? props.image ?? null,
-    sourceUrl: props.detailPageUrl ?? props.url ?? null,
+    // Rücklink zur Originalseite ist laut MySwitzerland-Lizenzbedingungen Pflicht,
+    // wenn Daten dieser API angezeigt werden - unbedingt beim ersten echten Lauf
+    // verifizieren, welches Feld die volle Detailseiten-URL enthält.
+    sourceUrl: props.mainDetail?.url ?? props.detailPageUrl ?? props.url ?? null,
   };
 }
 

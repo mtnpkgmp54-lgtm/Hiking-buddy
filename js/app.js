@@ -130,6 +130,16 @@ function ampelLabel(ampel) {
   return { gruen: "☀️ gutes Wetter", gelb: "🌤️ durchzogen", rot: "⛈️ Gewitter/Regen" }[ampel] || "⏳ wird geprüft";
 }
 
+function sourceLinkLabel(sourceUrl) {
+  try {
+    const host = new URL(sourceUrl).hostname;
+    if (host.includes("myswitzerland.com")) return "📖 Vollständiger Beschrieb auf MySwitzerland.com";
+  } catch {
+    // ungültige URL -> generischer Fallback-Text
+  }
+  return "📖 Zur Originalseite";
+}
+
 function renderDetails(hike) {
   const weather = weatherById.get(hike.id);
   const transit = transitById.get(hike.id);
@@ -161,6 +171,11 @@ function renderDetails(hike) {
       <dt>ÖV ab Zürich HB</dt><dd>${transitHtml}</dd>
       <dt>Wetter</dt><dd>${weatherHtml}</dd>
     </dl>
+    ${
+      hike.sourceUrl
+        ? `<a class="source-link" target="_blank" rel="noopener" href="${hike.sourceUrl}">${sourceLinkLabel(hike.sourceUrl)}</a>`
+        : ""
+    }
     <div class="details-actions">
       ${
         done
@@ -168,7 +183,6 @@ function renderDetails(hike) {
              <button type="button" id="unmark-done-btn">↩️ nicht mehr als gemacht</button>`
           : `<button type="button" id="mark-done-btn">✅ Als gemacht markieren</button>`
       }
-      ${hike.sourceUrl ? `<a target="_blank" rel="noopener" href="${hike.sourceUrl}">Originalquelle</a>` : ""}
       <a target="_blank" rel="noopener" href="https://www.google.com/maps?q=${hike.start.lat},${hike.start.lon}">Karte</a>
     </div>
   `;

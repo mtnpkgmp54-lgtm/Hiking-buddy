@@ -240,6 +240,18 @@ button:disabled {
   margin: 0;
 }
 
+.source-link {
+  display: block;
+  text-align: center;
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-radius: 12px;
+  padding: 0.7rem 1rem;
+  margin-bottom: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
 .details-actions {
   display: flex;
   flex-wrap: wrap;
