@@ -173,6 +173,79 @@ button:disabled {
   color: var(--accent);
 }
 
+.card-actions {
+  margin-top: 0.75rem;
+}
+
+.card-actions .plan-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+
+.card-actions .plan-btn:disabled {
+  border-color: var(--border);
+  color: var(--muted);
+  opacity: 1;
+  cursor: default;
+}
+
+#history-section {
+  margin-top: 2rem;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.history {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.history-item {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.6rem 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.history-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.history-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.history-actions button {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.8rem;
+}
+
+.remove-btn {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.badge.done {
+  color: #1a7a3c;
+  border-color: #1a7a3c;
+}
+
 footer {
   color: var(--muted);
   font-size: 0.8rem;

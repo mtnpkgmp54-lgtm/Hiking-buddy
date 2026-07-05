@@ -8,6 +8,7 @@ import {
 import { fetchHikingRoutes } from "./overpass.js";
 import { fetchWeatherBatch } from "./weather.js";
 import { findNearestStation, getTravelMinutes } from "./transit.js";
+import { getHistory, findEntry, addPlanned, markDone, removeEntry } from "./history.js";
 
 const form = document.getElementById("search-form");
 const dateInput = document.getElementById("date-input");
@@ -15,6 +16,7 @@ const statusEl = document.getElementById("status");
 const resultsEl = document.getElementById("results");
 const summaryEl = document.getElementById("summary");
 const searchBtn = document.getElementById("search-btn");
+const historyEl = document.getElementById("history");
 
 // Open-Meteo liefert Prognosen für ~16 Tage; wir begrenzen die Auswahl entsprechend.
 function initDateInput() {
@@ -63,8 +65,18 @@ function pLimit(concurrency) {
     });
 }
 
+let currentResultsById = new Map();
+
+function planButtonHtml(route, dateISO) {
+  const existing = findEntry(route.id, dateISO);
+  return existing
+    ? `<button type="button" class="plan-btn" disabled>📌 gemerkt</button>`
+    : `<button type="button" class="plan-btn">📌 Für ${dateISO} merken</button>`;
+}
+
 function renderResults(results, dateISO, checkedCount, totalCandidates) {
   resultsEl.innerHTML = "";
+  currentResultsById = new Map(results.map((r) => [r.id, r]));
 
   if (!results.length) {
     summaryEl.textContent =
@@ -86,6 +98,8 @@ function renderResults(results, dateISO, checkedCount, totalCandidates) {
 
     const card = document.createElement("article");
     card.className = "card";
+    card.dataset.routeId = r.id;
+    card.dataset.date = dateISO;
     card.innerHTML = `
       <h3>${r.name}</h3>
       <div class="badges">
@@ -104,10 +118,76 @@ function renderResults(results, dateISO, checkedCount, totalCandidates) {
         <a target="_blank" rel="noopener" href="https://www.openstreetmap.org/relation/${r.id}">Route auf OSM</a>
         <a target="_blank" rel="noopener" href="https://www.google.com/maps?q=${r.lat},${r.lon}">Karte</a>
       </div>
+      <div class="card-actions">${planButtonHtml(r, dateISO)}</div>
     `;
     resultsEl.appendChild(card);
   }
 }
+
+function renderHistory() {
+  const items = getHistory();
+  if (!items.length) {
+    historyEl.innerHTML = '<p class="muted">Noch keine Wanderung gemerkt.</p>';
+    return;
+  }
+
+  historyEl.innerHTML = items
+    .map((e) => {
+      const meta = [
+        e.plannedDate,
+        e.stationName,
+        e.travelMin != null ? `${e.travelMin} Min ab Zürich HB` : null,
+        e.sunshineHours != null ? `${e.sunshineHours} h Sonne` : null,
+      ]
+        .filter(Boolean)
+        .join(" · ");
+      const statusBadge =
+        e.status === "gemacht"
+          ? `<span class="badge done">✅ gemacht am ${e.completedDate}</span>`
+          : `<span class="badge">📌 geplant</span>`;
+      return `
+        <div class="history-item" data-route-id="${e.routeId}" data-date="${e.plannedDate}">
+          <div class="history-main">
+            <strong>${e.name}</strong>
+            <span class="muted">${meta}</span>
+          </div>
+          <div class="history-actions">
+            ${statusBadge}
+            ${e.status !== "gemacht" ? '<button type="button" class="done-btn">Als gemacht markieren</button>' : ""}
+            <button type="button" class="remove-btn" title="Entfernen">✕</button>
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+resultsEl.addEventListener("click", (e) => {
+  const btn = e.target.closest(".plan-btn");
+  if (!btn || btn.disabled) return;
+  const card = btn.closest(".card");
+  const route = currentResultsById.get(Number(card.dataset.routeId));
+  if (!route) return;
+  addPlanned(route, card.dataset.date);
+  btn.disabled = true;
+  btn.textContent = "📌 gemerkt";
+  renderHistory();
+});
+
+historyEl.addEventListener("click", (e) => {
+  const item = e.target.closest(".history-item");
+  if (!item) return;
+  const routeId = Number(item.dataset.routeId);
+  const plannedDate = item.dataset.date;
+
+  if (e.target.classList.contains("done-btn")) {
+    markDone(routeId, plannedDate, new Date().toISOString().slice(0, 10));
+    renderHistory();
+  } else if (e.target.classList.contains("remove-btn")) {
+    removeEntry(routeId, plannedDate);
+    renderHistory();
+  }
+});
 
 async function runSearch() {
   searchBtn.disabled = true;
@@ -168,3 +248,4 @@ form.addEventListener("submit", (e) => {
 });
 
 initDateInput();
+renderHistory();
