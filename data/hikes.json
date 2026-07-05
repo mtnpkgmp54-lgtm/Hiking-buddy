@@ -18,7 +18,9 @@
     "descentM": 300,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "rigi-kulm-vitznau",
@@ -39,7 +41,9 @@
     "descentM": 1300,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "rigi-scheidegg-kaltbad",
@@ -60,7 +64,9 @@
     "descentM": 450,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "napf-escholzmatt",
@@ -81,7 +87,9 @@
     "descentM": 750,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "creux-du-van",
@@ -102,7 +110,9 @@
     "descentM": 650,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "pilatus-fraekmuentegg",
@@ -123,7 +133,9 @@
     "descentM": 750,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "schynige-platte-faulhorn-first",
@@ -144,7 +156,9 @@
     "descentM": 1350,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "saentis-schwaegalp",
@@ -165,7 +179,9 @@
     "descentM": 950,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "chaeserrugg-unterwasser",
@@ -186,7 +202,9 @@
     "descentM": 700,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "stoos-ridge-walk",
@@ -207,7 +225,9 @@
     "descentM": 400,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "braunwald-grotzenbuel",
@@ -228,7 +248,9 @@
     "descentM": 400,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "flumserberg-gulmen",
@@ -249,7 +271,9 @@
     "descentM": 550,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "grosser-mythen",
@@ -270,7 +294,9 @@
     "descentM": 900,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "speer-amden",
@@ -291,7 +317,9 @@
     "descentM": 750,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "hoher-kasten-bruelisau",
@@ -312,7 +340,9 @@
     "descentM": 1000,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "ebenalp-seealpsee",
@@ -333,7 +363,9 @@
     "descentM": 500,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "pizol-5-seen",
@@ -354,7 +386,9 @@
     "descentM": 550,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "weissenstein-solothurn",
@@ -375,7 +409,9 @@
     "descentM": 750,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "chasseral",
@@ -396,7 +432,9 @@
     "descentM": 200,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "niesen-spiez",
@@ -417,7 +455,9 @@
     "descentM": 0,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "sattel-hochstuckli",
@@ -438,7 +478,9 @@
     "descentM": 300,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "bachtel-turm",
@@ -459,7 +501,9 @@
     "descentM": 100,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "laegern-baden",
@@ -480,7 +524,9 @@
     "descentM": 480,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "rheinfall-rundweg",
@@ -501,7 +547,9 @@
     "descentM": 100,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "melchsee-frutt",
@@ -522,7 +570,9 @@
     "descentM": 350,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "etzel-einsiedeln",
@@ -543,7 +593,9 @@
     "descentM": 500,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "klettersteig-gonzen",
@@ -564,7 +616,9 @@
     "descentM": 650,
     "type": "via_ferrata",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   },
   {
     "id": "klettersteig-rotzloch",
@@ -585,6 +639,8 @@
     "descentM": 300,
     "type": "via_ferrata",
     "imageUrl": null,
-    "sourceUrl": null
+    "sourceUrl": null,
+    "description": null,
+    "difficulty": null
   }
 ]

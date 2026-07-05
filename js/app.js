@@ -130,6 +130,12 @@ function ampelLabel(ampel) {
   return { gruen: "☀️ gutes Wetter", gelb: "🌤️ durchzogen", rot: "⛈️ Gewitter/Regen" }[ampel] || "⏳ wird geprüft";
 }
 
+function escapeHtml(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 function sourceLinkLabel(sourceUrl) {
   try {
     const host = new URL(sourceUrl).hostname;
@@ -163,8 +169,10 @@ function renderDetails(hike) {
   detailsEl.innerHTML = `
     ${hike.imageUrl ? `<img class="details-image" src="${hike.imageUrl}" alt="${hike.name}" />` : ""}
     <h3>${hike.type === "via_ferrata" ? "🧗" : "🥾"} ${hike.name}</h3>
+    ${hike.description ? `<p class="description">${escapeHtml(hike.description)}</p>` : ""}
     <dl class="facts">
       <dt>Typ</dt><dd>${hike.type === "via_ferrata" ? "Klettersteig" : "Wanderung"}</dd>
+      <dt>Schwierigkeit</dt><dd>${hike.difficulty ? escapeHtml(hike.difficulty) : "nicht verfügbar"}</dd>
       <dt>Strecke</dt><dd>${hike.distanceKm} km</dd>
       <dt>Aufstieg / Abstieg</dt><dd>${hike.ascentM ?? "–"} m / ${hike.descentM ?? "–"} m</dd>
       <dt>Geschätzte Gehzeit</dt><dd>${hikeHours} h</dd>

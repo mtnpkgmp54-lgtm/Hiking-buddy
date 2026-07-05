@@ -52,7 +52,9 @@ async function fetchTours(apiKey, subtrip) {
   let offset = 0;
 
   for (;;) {
-    const url = `${BASE_URL}/tours?subtrip=${encodeURIComponent(subtrip)}&limit=${PAGE_SIZE}&offset=${offset}`;
+    const url =
+      `${BASE_URL}/tours?subtrip=${encodeURIComponent(subtrip)}&limit=${PAGE_SIZE}&offset=${offset}` +
+      `&striphtml=true`;
     const res = await fetch(url, { headers: { [AUTH_HEADER_NAME]: apiKey } });
     if (!res.ok) {
       throw new Error(`MySwitzerland-Anfrage fehlgeschlagen für "${subtrip}" (Status ${res.status})`);
@@ -120,6 +122,13 @@ function normalize(feature, type) {
     distanceKm: props.distance ? Math.round((props.distance / 1000) * 10) / 10 : (props.distanceKm ?? null),
     ascentM: props.ascent ?? props.elevationGain ?? null,
     descentM: props.descent ?? props.elevationLoss ?? null,
+    // TODO: Feldname für Schwierigkeitsgrad verifizieren - falls die API keinen
+    // liefert, bleibt "difficulty" null und die UI zeigt "nicht verfügbar" an
+    // statt zu raten.
+    difficulty: props.difficulty ?? null,
+    // "striphtml=true" (siehe URL oben) sollte die API bereits ohne Tags liefern;
+    // stripHtml() ist zusätzliche Absicherung falls das nicht überall greift.
+    description: stripHtml(props.abstract?.de ?? props.description?.de ?? props.abstract ?? props.description ?? null),
     type,
     imageUrl: props.images?.[0]?.url ?? props.image ?? null,
     // Rücklink zur Originalseite ist laut MySwitzerland-Lizenzbedingungen Pflicht,
@@ -127,6 +136,10 @@ function normalize(feature, type) {
     // verifizieren, welches Feld die volle Detailseiten-URL enthält.
     sourceUrl: props.mainDetail?.url ?? props.detailPageUrl ?? props.url ?? null,
   };
+}
+
+function stripHtml(text) {
+  return text ? text.replace(/<[^>]*>/g, "").trim() || null : null;
 }
 
 async function loadCurated() {
