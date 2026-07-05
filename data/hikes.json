@@ -1,0 +1,262 @@
+[
+  {
+    "id": "uetliberg-felsenegg",
+    "name": "Üetliberg – Felsenegg (Planetenweg)",
+    "start": { "name": "Uetliberg, Bahnhof", "lat": 47.3500, "lon": 8.4909 },
+    "end": { "name": "Felsenegg, Adliswil (Luftseilbahn)", "lat": 47.2989, "lon": 8.5219 },
+    "durationHours": 2.5,
+    "distanceKm": 8.5,
+    "ascentM": 250,
+    "descentM": 300
+  },
+  {
+    "id": "rigi-kulm-vitznau",
+    "name": "Rigi Kulm – Vitznau",
+    "start": { "name": "Rigi Kulm", "lat": 47.0575, "lon": 8.4878 },
+    "end": { "name": "Vitznau, Bahnhof", "lat": 47.0119, "lon": 8.4838 },
+    "durationHours": 4,
+    "distanceKm": 12,
+    "ascentM": 100,
+    "descentM": 1300
+  },
+  {
+    "id": "rigi-scheidegg-kaltbad",
+    "name": "Rigi Scheidegg – Rigi Kaltbad",
+    "start": { "name": "Rigi Scheidegg", "lat": 47.0392, "lon": 8.5386 },
+    "end": { "name": "Rigi Kaltbad, Bahnhof", "lat": 47.0517, "lon": 8.4767 },
+    "durationHours": 3,
+    "distanceKm": 9,
+    "ascentM": 150,
+    "descentM": 450
+  },
+  {
+    "id": "napf-escholzmatt",
+    "name": "Napf Rundwanderung ab Escholzmatt",
+    "start": { "name": "Escholzmatt, Bahnhof", "lat": 46.9167, "lon": 7.9167 },
+    "end": { "name": "Escholzmatt, Bahnhof", "lat": 46.9167, "lon": 7.9167 },
+    "durationHours": 5.5,
+    "distanceKm": 17,
+    "ascentM": 750,
+    "descentM": 750
+  },
+  {
+    "id": "creux-du-van",
+    "name": "Creux du Van ab Noiraigue",
+    "start": { "name": "Noiraigue, Gare", "lat": 46.9432, "lon": 6.7192 },
+    "end": { "name": "Noiraigue, Gare", "lat": 46.9432, "lon": 6.7192 },
+    "durationHours": 4.5,
+    "distanceKm": 14,
+    "ascentM": 650,
+    "descentM": 650
+  },
+  {
+    "id": "pilatus-fraekmuentegg",
+    "name": "Pilatus: Fräkmüntegg – Tomlishorn",
+    "start": { "name": "Fräkmüntegg, Luftseilbahn", "lat": 46.9791, "lon": 8.2429 },
+    "end": { "name": "Fräkmüntegg, Luftseilbahn", "lat": 46.9791, "lon": 8.2429 },
+    "durationHours": 4,
+    "distanceKm": 9,
+    "ascentM": 750,
+    "descentM": 750
+  },
+  {
+    "id": "schynige-platte-faulhorn-first",
+    "name": "Schynige Platte – Faulhorn – First",
+    "start": { "name": "Schynige Platte, Bahnhof", "lat": 46.6547, "lon": 7.9114 },
+    "end": { "name": "First, Grindelwald (Luftseilbahn)", "lat": 46.6547, "lon": 8.0522 },
+    "durationHours": 7,
+    "distanceKm": 19,
+    "ascentM": 850,
+    "descentM": 1350
+  },
+  {
+    "id": "saentis-schwaegalp",
+    "name": "Säntis Rundweg ab Schwägalp",
+    "start": { "name": "Schwägalp, Passhöhe", "lat": 47.2764, "lon": 9.3308 },
+    "end": { "name": "Schwägalp, Passhöhe", "lat": 47.2764, "lon": 9.3308 },
+    "durationHours": 5,
+    "distanceKm": 13,
+    "ascentM": 950,
+    "descentM": 950
+  },
+  {
+    "id": "chaeserrugg-unterwasser",
+    "name": "Chäserrugg ab Unterwasser",
+    "start": { "name": "Unterwasser, Iltios (Bergbahn)", "lat": 47.1969, "lon": 9.3122 },
+    "end": { "name": "Unterwasser, Iltios (Bergbahn)", "lat": 47.1969, "lon": 9.3122 },
+    "durationHours": 4,
+    "distanceKm": 11,
+    "ascentM": 700,
+    "descentM": 700
+  },
+  {
+    "id": "stoos-ridge-walk",
+    "name": "Stoos Ridge Walk: Fronalpstock – Klingenstock",
+    "start": { "name": "Fronalpstock, Stoos (Standseilbahn)", "lat": 46.9836, "lon": 8.6667 },
+    "end": { "name": "Klingenstock, Stoos (Luftseilbahn)", "lat": 46.9975, "lon": 8.6664 },
+    "durationHours": 3.5,
+    "distanceKm": 8,
+    "ascentM": 350,
+    "descentM": 400
+  },
+  {
+    "id": "braunwald-grotzenbuel",
+    "name": "Braunwald – Grotzenbüel",
+    "start": { "name": "Braunwald, Standseilbahn", "lat": 46.9375, "lon": 8.9967 },
+    "end": { "name": "Braunwald, Standseilbahn", "lat": 46.9375, "lon": 8.9967 },
+    "durationHours": 3,
+    "distanceKm": 9,
+    "ascentM": 400,
+    "descentM": 400
+  },
+  {
+    "id": "flumserberg-gulmen",
+    "name": "Flumserberg – Gulmen – Prodalp",
+    "start": { "name": "Flumserberg Tannenheim, Bergbahn", "lat": 47.1103, "lon": 9.2947 },
+    "end": { "name": "Flumserberg Tannenheim, Bergbahn", "lat": 47.1103, "lon": 9.2947 },
+    "durationHours": 4,
+    "distanceKm": 11,
+    "ascentM": 550,
+    "descentM": 550
+  },
+  {
+    "id": "grosser-mythen",
+    "name": "Grosser Mythen ab Rickenbach-Schwyz",
+    "start": { "name": "Rickenbach-Schwyz, Mythenregion", "lat": 47.0181, "lon": 8.6664 },
+    "end": { "name": "Rickenbach-Schwyz, Mythenregion", "lat": 47.0181, "lon": 8.6664 },
+    "durationHours": 4.5,
+    "distanceKm": 9,
+    "ascentM": 900,
+    "descentM": 900
+  },
+  {
+    "id": "speer-amden",
+    "name": "Speer ab Amden",
+    "start": { "name": "Amden Arvenbüel", "lat": 47.1614, "lon": 9.1494 },
+    "end": { "name": "Amden Arvenbüel", "lat": 47.1614, "lon": 9.1494 },
+    "durationHours": 4.5,
+    "distanceKm": 11,
+    "ascentM": 750,
+    "descentM": 750
+  },
+  {
+    "id": "hoher-kasten-bruelisau",
+    "name": "Hoher Kasten – Staubern – Saxerlücke – Brülisau",
+    "start": { "name": "Hoher Kasten, Luftseilbahn", "lat": 47.2531, "lon": 9.5225 },
+    "end": { "name": "Brülisau, Bahnhof", "lat": 47.2894, "lon": 9.4700 },
+    "durationHours": 4,
+    "distanceKm": 12,
+    "ascentM": 150,
+    "descentM": 1000
+  },
+  {
+    "id": "ebenalp-seealpsee",
+    "name": "Ebenalp – Seealpsee – Wasserauen",
+    "start": { "name": "Ebenalp, Luftseilbahn", "lat": 47.2725, "lon": 9.4064 },
+    "end": { "name": "Wasserauen, Bahnhof", "lat": 47.2872, "lon": 9.4108 },
+    "durationHours": 2.5,
+    "distanceKm": 7,
+    "ascentM": 100,
+    "descentM": 500
+  },
+  {
+    "id": "pizol-5-seen",
+    "name": "Pizol 5-Seen-Wanderung",
+    "start": { "name": "Pizol, Bergstation Furt", "lat": 47.0428, "lon": 9.4192 },
+    "end": { "name": "Pizol, Bergstation Furt", "lat": 47.0428, "lon": 9.4192 },
+    "durationHours": 4.5,
+    "distanceKm": 12,
+    "ascentM": 550,
+    "descentM": 550
+  },
+  {
+    "id": "weissenstein-solothurn",
+    "name": "Weissenstein Jurahöhenweg",
+    "start": { "name": "Weissenstein, Kurhaus", "lat": 47.2481, "lon": 7.5364 },
+    "end": { "name": "Oberdorf SO, Bahnhof", "lat": 47.2183, "lon": 7.5386 },
+    "durationHours": 3.5,
+    "distanceKm": 10,
+    "ascentM": 100,
+    "descentM": 750
+  },
+  {
+    "id": "chasseral",
+    "name": "Chasseral ab Nods",
+    "start": { "name": "Nods, village", "lat": 47.1394, "lon": 7.1128 },
+    "end": { "name": "Chasseral, Hôtel", "lat": 47.1319, "lon": 7.0611 },
+    "durationHours": 4,
+    "distanceKm": 11,
+    "ascentM": 750,
+    "descentM": 200
+  },
+  {
+    "id": "niesen-spiez",
+    "name": "Niesen ab Spiez (Mulihorn-Route)",
+    "start": { "name": "Spiez, Bahnhof", "lat": 46.6864, "lon": 7.6772 },
+    "end": { "name": "Niesen Kulm, Bergstation", "lat": 46.6486, "lon": 7.6531 },
+    "durationHours": 5,
+    "distanceKm": 11,
+    "ascentM": 1650,
+    "descentM": 0
+  },
+  {
+    "id": "sattel-hochstuckli",
+    "name": "Sattel-Hochstuckli Rundweg",
+    "start": { "name": "Sattel-Hochstuckli, Bergstation", "lat": 47.0692, "lon": 8.6428 },
+    "end": { "name": "Sattel-Hochstuckli, Bergstation", "lat": 47.0692, "lon": 8.6428 },
+    "durationHours": 3,
+    "distanceKm": 8,
+    "ascentM": 300,
+    "descentM": 300
+  },
+  {
+    "id": "bachtel-turm",
+    "name": "Bachtel Turm ab Wald ZH",
+    "start": { "name": "Wald ZH, Bahnhof", "lat": 47.2794, "lon": 8.9153 },
+    "end": { "name": "Bachtel Turm", "lat": 47.2683, "lon": 8.8869 },
+    "durationHours": 2.5,
+    "distanceKm": 8,
+    "ascentM": 450,
+    "descentM": 100
+  },
+  {
+    "id": "laegern-baden",
+    "name": "Lägern-Grat: Baden – Wettingen",
+    "start": { "name": "Baden, Bahnhof", "lat": 47.4761, "lon": 8.3064 },
+    "end": { "name": "Wettingen, Bahnhof", "lat": 47.4644, "lon": 8.3181 },
+    "durationHours": 3.5,
+    "distanceKm": 12,
+    "ascentM": 500,
+    "descentM": 480
+  },
+  {
+    "id": "rheinfall-rundweg",
+    "name": "Rheinfall Rundweg ab Schaffhausen",
+    "start": { "name": "Schaffhausen, Bahnhof", "lat": 47.6966, "lon": 8.6303 },
+    "end": { "name": "Neuhausen Rheinfall, Bahnhof", "lat": 47.6825, "lon": 8.6156 },
+    "durationHours": 2,
+    "distanceKm": 6,
+    "ascentM": 100,
+    "descentM": 100
+  },
+  {
+    "id": "melchsee-frutt",
+    "name": "Melchsee-Frutt Rundweg",
+    "start": { "name": "Melchsee-Frutt, Bergstation", "lat": 46.7908, "lon": 8.2664 },
+    "end": { "name": "Melchsee-Frutt, Bergstation", "lat": 46.7908, "lon": 8.2664 },
+    "durationHours": 3.5,
+    "distanceKm": 10,
+    "ascentM": 350,
+    "descentM": 350
+  },
+  {
+    "id": "etzel-einsiedeln",
+    "name": "Etzel: Pfäffikon SZ – Einsiedeln",
+    "start": { "name": "Pfäffikon SZ, Bahnhof", "lat": 47.2019, "lon": 8.7803 },
+    "end": { "name": "Einsiedeln, Bahnhof", "lat": 47.1264, "lon": 8.7461 },
+    "durationHours": 3.5,
+    "distanceKm": 13,
+    "ascentM": 700,
+    "descentM": 500
+  }
+]
