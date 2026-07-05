@@ -45,6 +45,8 @@ function initDateInput() {
 }
 
 function estimateHikeHours(hike) {
+  if (hike.durationHours != null) return hike.durationHours;
+  // Fallback nach SAC-Faustregel, falls keine Gehzeit hinterlegt ist.
   const base = hike.distanceKm / 4;
   const ascentTime = (hike.ascentM || 0) / 350;
   return Math.round((base + ascentTime) * 10) / 10;
@@ -167,7 +169,7 @@ function renderDetails(hike) {
 
   detailsEl.hidden = false;
   detailsEl.innerHTML = `
-    ${hike.imageUrl ? `<img class="details-image" src="${hike.imageUrl}" alt="${hike.name}" />` : ""}
+    ${hike.imageUrl ? `<img class="details-image" src="${hike.imageUrl}" alt="${escapeHtml(hike.name)}" onerror="this.remove()" />` : ""}
     <h3>${hike.type === "via_ferrata" ? "🧗" : "🥾"} ${hike.name}</h3>
     ${hike.description ? `<p class="description">${escapeHtml(hike.description)}</p>` : ""}
     <dl class="facts">
