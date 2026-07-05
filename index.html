@@ -4,48 +4,66 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tageswanderungen ab Zürich</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h1>🥾 Tageswanderungen ab Zürich HB</h1>
+    <h1>🥾 Tageswanderungen &amp; Klettersteige ab Zürich HB</h1>
     <p class="subtitle">
-      Findet Wanderungen mit gutem Wetter (kein Gewitter, viel Sonne),
-      die ab Zürich HB in unter 2 Stunden mit dem ÖV erreichbar und an einem
-      Tag machbar sind.
+      Gutes Wetter (kein Gewitter, viel Sonne), unter 2 Stunden mit dem ÖV ab
+      Zürich HB erreichbar, an einem Tag machbar.
     </p>
   </header>
 
   <main>
-    <form id="search-form">
-      <label for="date-input">Datum</label>
-      <input type="date" id="date-input" required />
-      <button type="submit" id="search-btn">Wanderungen finden</button>
+    <form id="filter-bar">
+      <div class="field">
+        <label for="date-input">Datum</label>
+        <input type="date" id="date-input" required />
+      </div>
+      <div class="field checkboxes">
+        <label><input type="checkbox" id="type-wanderung" checked /> 🥾 Wanderungen</label>
+        <label><input type="checkbox" id="type-via-ferrata" checked /> 🧗 Klettersteige</label>
+      </div>
+      <div class="field checkboxes">
+        <label><input type="checkbox" id="hide-done" /> bereits gemachte ausblenden</label>
+      </div>
+      <button type="button" id="surprise-btn">🎲 Überrasch mich</button>
     </form>
 
     <p id="status" role="status" aria-live="polite"></p>
-    <p id="summary"></p>
-    <section id="results" class="results"></section>
 
-    <section id="history-section">
-      <h2>🗒️ Meine Wanderungen</h2>
-      <p class="subtitle">
-        Gemerkte und gemachte Wanderungen (nur auf diesem Gerät/Browser gespeichert).
-      </p>
-      <div id="history" class="history"></div>
-    </section>
+    <div class="legend">
+      <span><i class="dot gruen"></i> gutes Wetter</span>
+      <span><i class="dot gelb"></i> durchzogen</span>
+      <span><i class="dot rot"></i> Gewitter/Regen</span>
+      <span><i class="dot grau"></i> wird geprüft</span>
+      <span class="sep">·</span>
+      <span>🥾 Wanderung</span>
+      <span>🧗 Klettersteig</span>
+      <span class="sep">·</span>
+      <span>✅ bereits gemacht</span>
+    </div>
+
+    <div id="map"></div>
+
+    <section id="details" class="details" hidden></section>
   </main>
 
   <footer>
     <p>
-      Daten: Wanderrouten &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap-Mitwirkende</a>
-      (via Overpass API) &middot;
+      Touren-Daten: <a href="https://opendata.myswitzerland.io/" target="_blank" rel="noopener">MySwitzerland Open Data</a>
+      (ergänzt um eine manuell kuratierte Liste) &middot;
+      Karte: <a href="https://www.swisstopo.admin.ch/" target="_blank" rel="noopener">swisstopo</a> Geodienste &middot;
       Wetter von <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> &middot;
       Fahrplan von <a href="https://transport.opendata.ch/" target="_blank" rel="noopener">transport.opendata.ch</a>.
-      Strecken, Gehzeiten und Startpunkte sind Näherungswerte aus OSM-Daten - bitte vor Ort/mit Karte gegenprüfen.
+      Strecken, Gehzeiten und Startpunkte sind Näherungswerte - bitte vor Ort/mit Karte gegenprüfen.
+      "Bereits gemacht" wird nur lokal in diesem Browser gespeichert.
     </p>
   </footer>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>

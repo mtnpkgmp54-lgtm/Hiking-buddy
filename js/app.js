@@ -1,28 +1,40 @@
 import {
   MAX_TRAVEL_MINUTES,
   MAX_HIKE_HOURS,
-  MAX_CANDIDATES_TO_CHECK,
-  WANTED_RESULTS,
   TRANSIT_CONCURRENCY,
+  SWISSTOPO_ATTRIBUTION,
+  SWISSTOPO_BASEMAP_URL,
+  SWISSTOPO_HIKING_TRAILS_URL,
+  ZURICH_HB_LATLON,
+  DEFAULT_MAP_ZOOM,
 } from "./config.js";
-import { fetchHikingRoutes } from "./overpass.js";
+import { loadHikes } from "./data.js";
 import { fetchWeatherBatch } from "./weather.js";
 import { findNearestStation, getTravelMinutes } from "./transit.js";
-import { getHistory, findEntry, addPlanned, markDone, removeEntry } from "./history.js";
+import { isDone, markDone, unmarkDone, getDoneDate } from "./history.js";
 
-const form = document.getElementById("search-form");
 const dateInput = document.getElementById("date-input");
+const typeWanderungCb = document.getElementById("type-wanderung");
+const typeViaFerrataCb = document.getElementById("type-via-ferrata");
+const hideDoneCb = document.getElementById("hide-done");
+const surpriseBtn = document.getElementById("surprise-btn");
 const statusEl = document.getElementById("status");
-const resultsEl = document.getElementById("results");
-const summaryEl = document.getElementById("summary");
-const searchBtn = document.getElementById("search-btn");
-const historyEl = document.getElementById("history");
+const detailsEl = document.getElementById("details");
 
-// Open-Meteo liefert Prognosen für ~16 Tage; wir begrenzen die Auswahl entsprechend.
+let hikesById = new Map();
+let weatherById = new Map(); // hikeId -> weather (inkl. ampel)
+let transitById = new Map(); // hikeId -> { station, travelMin } | null
+let markersById = new Map(); // hikeId -> L.Marker
+let map;
+
+function setStatus(text) {
+  statusEl.textContent = text || "";
+}
+
 function initDateInput() {
   const today = new Date();
   const max = new Date();
-  max.setDate(max.getDate() + 15);
+  max.setDate(max.getDate() + 15); // Open-Meteo-Prognosehorizont
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
 
@@ -32,18 +44,12 @@ function initDateInput() {
   dateInput.value = toISO(tomorrow);
 }
 
-function setStatus(text) {
-  statusEl.textContent = text || "";
-}
-
-function estimateHikeHours(route) {
-  // Grobe Schätzung nach SAC-Faustregel: 4 km/h in der Ebene + Aufstiegszeit.
-  const base = route.distanceKm / 4;
-  const ascentTime = (route.ascent || 0) / 350;
+function estimateHikeHours(hike) {
+  const base = hike.distanceKm / 4;
+  const ascentTime = (hike.ascentM || 0) / 350;
   return Math.round((base + ascentTime) * 10) / 10;
 }
 
-/** Einfacher Concurrency-Limiter, damit wir die öffentliche API nicht fluten. */
 function pLimit(concurrency) {
   let active = 0;
   const queue = [];
@@ -65,187 +71,213 @@ function pLimit(concurrency) {
     });
 }
 
-let currentResultsById = new Map();
+function initMap() {
+  map = L.map("map").setView(ZURICH_HB_LATLON, DEFAULT_MAP_ZOOM);
 
-function planButtonHtml(route, dateISO) {
-  const existing = findEntry(route.id, dateISO);
-  return existing
-    ? `<button type="button" class="plan-btn" disabled>📌 gemerkt</button>`
-    : `<button type="button" class="plan-btn">📌 Für ${dateISO} merken</button>`;
+  const basemap = L.tileLayer(SWISSTOPO_BASEMAP_URL, {
+    attribution: SWISSTOPO_ATTRIBUTION,
+    maxZoom: 18,
+  }).addTo(map);
+
+  const wanderwege = L.tileLayer(SWISSTOPO_HIKING_TRAILS_URL, {
+    attribution: SWISSTOPO_ATTRIBUTION,
+    maxZoom: 18,
+    opacity: 0.9,
+  }).addTo(map);
+
+  L.control.layers(
+    { "swisstopo Übersichtsplan": basemap },
+    { "Wanderwege (swisstopo)": wanderwege }
+  ).addTo(map);
 }
 
-function renderResults(results, dateISO, checkedCount, totalCandidates) {
-  resultsEl.innerHTML = "";
-  currentResultsById = new Map(results.map((r) => [r.id, r]));
+function makeIcon(hike, ampel, done) {
+  const emoji = hike.type === "via_ferrata" ? "🧗" : "🥾";
+  const classes = ["marker", ampel || "grau", done ? "done" : ""].filter(Boolean).join(" ");
+  return L.divIcon({
+    html: `<div class="${classes}">${emoji}</div>`,
+    className: "",
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -16],
+  });
+}
 
-  if (!results.length) {
-    summaryEl.textContent =
-      `Keine passende Wanderung gefunden (${checkedCount} von ${totalCandidates} ` +
-      `sonnigen, gewitterfreien Routen auf ÖV-Erreichbarkeit geprüft). ` +
-      `Versuch es mit einem anderen Datum.`;
-    return;
-  }
+function updateMarker(hike) {
+  const marker = markersById.get(hike.id);
+  if (!marker) return;
+  const ampel = weatherById.get(hike.id)?.ampel || "grau";
+  marker.setIcon(makeIcon(hike, ampel, isDone(hike.id)));
+}
 
-  summaryEl.textContent =
-    `${results.length} Wanderungen für ${dateISO}: gutes Wetter, unter ` +
-    `${MAX_TRAVEL_MINUTES} Min. ab Zürich HB erreichbar, an einem Tag machbar ` +
-    `(${checkedCount} von ${totalCandidates} Kandidaten geprüft).`;
+function typeCheckboxOk(hike) {
+  if (hike.type === "via_ferrata") return typeViaFerrataCb.checked;
+  return typeWanderungCb.checked;
+}
 
-  for (const r of results) {
-    const hikeHours = estimateHikeHours(r);
-    const totalDayHours = Math.round((2 * (r.travelMin / 60) + hikeHours) * 10) / 10;
-    const longDay = totalDayHours > 12;
-
-    const card = document.createElement("article");
-    card.className = "card";
-    card.dataset.routeId = r.id;
-    card.dataset.date = dateISO;
-    card.innerHTML = `
-      <h3>${r.name}</h3>
-      <div class="badges">
-        <span class="badge sun">☀️ ${r.weather.sunshineHours} h Sonne</span>
-        <span class="badge">🌡️ ${r.weather.tempMax != null ? Math.round(r.weather.tempMax) + "°C" : "–"}</span>
-        <span class="badge">🚂 ${r.travelMin} Min ab Zürich HB</span>
-        ${longDay ? '<span class="badge warn">⚠️ langer Tag</span>' : ""}
-      </div>
-      <dl class="facts">
-        <dt>Strecke</dt><dd>${r.distanceKm} km</dd>
-        <dt>Aufstieg / Abstieg</dt><dd>${r.ascent ?? "–"} m / ${r.descent ?? "–"} m</dd>
-        <dt>Geschätzte Gehzeit</dt><dd>${hikeHours} h</dd>
-        <dt>Nächste Haltestelle</dt><dd>${r.station.name}</dd>
-      </dl>
-      <div class="links">
-        <a target="_blank" rel="noopener" href="https://www.openstreetmap.org/relation/${r.id}">Route auf OSM</a>
-        <a target="_blank" rel="noopener" href="https://www.google.com/maps?q=${r.lat},${r.lon}">Karte</a>
-      </div>
-      <div class="card-actions">${planButtonHtml(r, dateISO)}</div>
-    `;
-    resultsEl.appendChild(card);
+function applyFilters() {
+  for (const hike of hikesById.values()) {
+    const marker = markersById.get(hike.id);
+    if (!marker) continue;
+    const shouldShow = typeCheckboxOk(hike) && (!hideDoneCb.checked || !isDone(hike.id));
+    const isShown = map.hasLayer(marker);
+    if (shouldShow && !isShown) marker.addTo(map);
+    if (!shouldShow && isShown) map.removeLayer(marker);
   }
 }
 
-function renderHistory() {
-  const items = getHistory();
-  if (!items.length) {
-    historyEl.innerHTML = '<p class="muted">Noch keine Wanderung gemerkt.</p>';
-    return;
-  }
-
-  historyEl.innerHTML = items
-    .map((e) => {
-      const meta = [
-        e.plannedDate,
-        e.stationName,
-        e.travelMin != null ? `${e.travelMin} Min ab Zürich HB` : null,
-        e.sunshineHours != null ? `${e.sunshineHours} h Sonne` : null,
-      ]
-        .filter(Boolean)
-        .join(" · ");
-      const statusBadge =
-        e.status === "gemacht"
-          ? `<span class="badge done">✅ gemacht am ${e.completedDate}</span>`
-          : `<span class="badge">📌 geplant</span>`;
-      return `
-        <div class="history-item" data-route-id="${e.routeId}" data-date="${e.plannedDate}">
-          <div class="history-main">
-            <strong>${e.name}</strong>
-            <span class="muted">${meta}</span>
-          </div>
-          <div class="history-actions">
-            ${statusBadge}
-            ${e.status !== "gemacht" ? '<button type="button" class="done-btn">Als gemacht markieren</button>' : ""}
-            <button type="button" class="remove-btn" title="Entfernen">✕</button>
-          </div>
-        </div>
-      `;
-    })
-    .join("");
+function ampelLabel(ampel) {
+  return { gruen: "☀️ gutes Wetter", gelb: "🌤️ durchzogen", rot: "⛈️ Gewitter/Regen" }[ampel] || "⏳ wird geprüft";
 }
 
-resultsEl.addEventListener("click", (e) => {
-  const btn = e.target.closest(".plan-btn");
-  if (!btn || btn.disabled) return;
-  const card = btn.closest(".card");
-  const route = currentResultsById.get(Number(card.dataset.routeId));
-  if (!route) return;
-  addPlanned(route, card.dataset.date);
-  btn.disabled = true;
-  btn.textContent = "📌 gemerkt";
-  renderHistory();
-});
+function renderDetails(hike) {
+  const weather = weatherById.get(hike.id);
+  const transit = transitById.get(hike.id);
+  const hikeHours = estimateHikeHours(hike);
+  const done = isDone(hike.id);
+  const doneDate = done ? getDoneDate(hike.id) : null;
 
-historyEl.addEventListener("click", (e) => {
-  const item = e.target.closest(".history-item");
-  if (!item) return;
-  const routeId = Number(item.dataset.routeId);
-  const plannedDate = item.dataset.date;
+  const transitHtml = transit
+    ? `${transit.travelMin} Min ab Zürich HB (${transit.station.name})` +
+      (transit.travelMin > MAX_TRAVEL_MINUTES ? ' <span class="warn">⚠️ über 2h</span>' : "")
+    : transit === null
+      ? "keine ÖV-Verbindung gefunden"
+      : "wird geprüft...";
 
-  if (e.target.classList.contains("done-btn")) {
-    markDone(routeId, plannedDate, new Date().toISOString().slice(0, 10));
-    renderHistory();
-  } else if (e.target.classList.contains("remove-btn")) {
-    removeEntry(routeId, plannedDate);
-    renderHistory();
+  const weatherHtml = weather
+    ? `${ampelLabel(weather.ampel)} · ☀️ ${weather.sunshineHours} h Sonne` +
+      (weather.tempMax != null ? ` · 🌡️ ${Math.round(weather.tempMax)}°C` : "")
+    : "wird geprüft...";
+
+  detailsEl.hidden = false;
+  detailsEl.innerHTML = `
+    ${hike.imageUrl ? `<img class="details-image" src="${hike.imageUrl}" alt="${hike.name}" />` : ""}
+    <h3>${hike.type === "via_ferrata" ? "🧗" : "🥾"} ${hike.name}</h3>
+    <dl class="facts">
+      <dt>Typ</dt><dd>${hike.type === "via_ferrata" ? "Klettersteig" : "Wanderung"}</dd>
+      <dt>Strecke</dt><dd>${hike.distanceKm} km</dd>
+      <dt>Aufstieg / Abstieg</dt><dd>${hike.ascentM ?? "–"} m / ${hike.descentM ?? "–"} m</dd>
+      <dt>Geschätzte Gehzeit</dt><dd>${hikeHours} h</dd>
+      <dt>ÖV ab Zürich HB</dt><dd>${transitHtml}</dd>
+      <dt>Wetter</dt><dd>${weatherHtml}</dd>
+    </dl>
+    <div class="details-actions">
+      ${
+        done
+          ? `<span class="badge done">✅ gemacht am ${doneDate}</span>
+             <button type="button" id="unmark-done-btn">↩️ nicht mehr als gemacht</button>`
+          : `<button type="button" id="mark-done-btn">✅ Als gemacht markieren</button>`
+      }
+      ${hike.sourceUrl ? `<a target="_blank" rel="noopener" href="${hike.sourceUrl}">Originalquelle</a>` : ""}
+      <a target="_blank" rel="noopener" href="https://www.google.com/maps?q=${hike.start.lat},${hike.start.lon}">Karte</a>
+    </div>
+  `;
+
+  document.getElementById("mark-done-btn")?.addEventListener("click", () => {
+    markDone(hike.id, new Date().toISOString().slice(0, 10));
+    updateMarker(hike);
+    renderDetails(hike);
+    applyFilters();
+  });
+  document.getElementById("unmark-done-btn")?.addEventListener("click", () => {
+    unmarkDone(hike.id);
+    updateMarker(hike);
+    renderDetails(hike);
+    applyFilters();
+  });
+}
+
+function createMarkers() {
+  for (const hike of hikesById.values()) {
+    const marker = L.marker([hike.start.lat, hike.start.lon], {
+      icon: makeIcon(hike, "grau", isDone(hike.id)),
+    });
+    marker.bindTooltip(hike.name, { direction: "top" });
+    marker.on("click", () => renderDetails(hike));
+    markersById.set(hike.id, marker);
+    marker.addTo(map);
   }
-});
+}
 
-async function runSearch() {
-  searchBtn.disabled = true;
-  resultsEl.innerHTML = "";
-  summaryEl.textContent = "";
+async function loadTransitForAllHikes() {
   const dateISO = dateInput.value;
+  const limit = pLimit(TRANSIT_CONCURRENCY);
+  let checked = 0;
+  const hikes = [...hikesById.values()];
 
-  try {
-    const routes = await fetchHikingRoutes({ onStatus: setStatus });
-    const feasible = routes.filter((r) => estimateHikeHours(r) <= MAX_HIKE_HOURS);
-
-    setStatus(`Prüfe Wetter für ${feasible.length} Routen am ${dateISO}...`);
-    const weatherMap = await fetchWeatherBatch(feasible, dateISO, { onStatus: setStatus });
-
-    const sunnyCandidates = feasible
-      .map((r) => ({ ...r, weather: weatherMap.get(r.id) }))
-      .filter((r) => r.weather && !r.weather.thunderstorm)
-      .sort((a, b) => b.weather.sunshineHours - a.weather.sunshineHours);
-
-    const toCheck = sunnyCandidates.slice(0, MAX_CANDIDATES_TO_CHECK);
-    const results = [];
-    let checked = 0;
-    let stop = false;
-    const limit = pLimit(TRANSIT_CONCURRENCY);
-
-    await Promise.all(
-      toCheck.map((route) =>
-        limit(async () => {
-          if (stop) return;
-          const station = await findNearestStation(route.lat, route.lon);
-          if (!station) return;
-          const travelMin = await getTravelMinutes(station.id, dateISO);
-          checked++;
-          setStatus(`Prüfe ÖV-Erreichbarkeit... (${checked}/${toCheck.length})`);
-          if (travelMin != null && travelMin <= MAX_TRAVEL_MINUTES) {
-            results.push({ ...route, station, travelMin });
-            if (results.length >= WANTED_RESULTS) stop = true;
-          }
-        })
-      )
-    );
-
-    results.sort((a, b) => b.weather.sunshineHours - a.weather.sunshineHours);
-    setStatus("");
-    renderResults(results, dateISO, checked, toCheck.length);
-  } catch (err) {
-    console.error(err);
-    setStatus("");
-    summaryEl.textContent = `Fehler: ${err.message}. Bitte später erneut versuchen.`;
-  } finally {
-    searchBtn.disabled = false;
-  }
+  await Promise.all(
+    hikes.map((hike) =>
+      limit(async () => {
+        try {
+          const station = await findNearestStation(hike.start.lat, hike.start.lon);
+          const travelMin = station ? await getTravelMinutes(station.id, dateISO) : null;
+          transitById.set(hike.id, station && travelMin != null ? { station, travelMin } : null);
+        } catch {
+          transitById.set(hike.id, null);
+        }
+        checked++;
+        setStatus(`Prüfe ÖV-Erreichbarkeit... (${checked}/${hikes.length})`);
+      })
+    )
+  );
 }
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  runSearch();
-});
+async function refreshWeather() {
+  const dateISO = dateInput.value;
+  const hikes = [...hikesById.values()];
+  const points = hikes.map((h) => ({ id: h.id, lat: h.start.lat, lon: h.start.lon }));
 
-initDateInput();
-renderHistory();
+  setStatus(`Prüfe Wetter für ${dateISO}...`);
+  weatherById = await fetchWeatherBatch(points, dateISO, { onStatus: setStatus });
+
+  for (const hike of hikesById.values()) updateMarker(hike);
+  setStatus("");
+}
+
+function surprise() {
+  const pool = [...hikesById.values()].filter((hike) => {
+    if (!typeCheckboxOk(hike) || isDone(hike.id)) return false;
+    if (weatherById.get(hike.id)?.ampel !== "gruen") return false;
+    const transit = transitById.get(hike.id);
+    return transit && transit.travelMin <= MAX_TRAVEL_MINUTES;
+  });
+
+  if (!pool.length) {
+    setStatus("Keine passende Tour gefunden - versuch ein anderes Datum oder andere Filter.");
+    return;
+  }
+
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  map.flyTo([pick.start.lat, pick.start.lon], 12);
+  markersById.get(pick.id)?.openTooltip();
+  renderDetails(pick);
+}
+
+async function init() {
+  initDateInput();
+  initMap();
+
+  setStatus("Lade Touren...");
+  const hikes = await loadHikes();
+  // "an einem Tag machbar" ist ein hartes Kriterium - zu lange Touren erst gar
+  // nicht als Marker anlegen statt sie dauerhaft auf "wird geprüft" stehen zu lassen.
+  const dayHikes = hikes.filter((h) => estimateHikeHours(h) <= MAX_HIKE_HOURS);
+  hikesById = new Map(dayHikes.map((h) => [h.id, h]));
+
+  createMarkers();
+
+  dateInput.addEventListener("change", refreshWeather);
+  typeWanderungCb.addEventListener("change", applyFilters);
+  typeViaFerrataCb.addEventListener("change", applyFilters);
+  hideDoneCb.addEventListener("change", applyFilters);
+  surpriseBtn.addEventListener("click", surprise);
+
+  await loadTransitForAllHikes();
+  await refreshWeather();
+  applyFilters();
+}
+
+init().catch((err) => {
+  console.error(err);
+  setStatus(`Fehler: ${err.message}`);
+});

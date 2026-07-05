@@ -1,4 +1,10 @@
-import { METEO_API, THUNDERSTORM_CODES } from "./config.js";
+import {
+  METEO_API,
+  THUNDERSTORM_CODES,
+  AMPEL_RED_PRECIP_PROB,
+  AMPEL_GREEN_MIN_SUNSHINE_HOURS,
+  AMPEL_GREEN_MAX_PRECIP_PROB,
+} from "./config.js";
 
 const CHUNK_SIZE = 120; // Open-Meteo erlaubt viele Koordinaten pro Call, URL-Länge begrenzt uns
 
@@ -9,16 +15,16 @@ function chunk(arr, size) {
 }
 
 /**
- * Holt für jede Route das Tageswetter am gewünschten Datum und liefert eine
- * Map routeId -> { sunshineHours, thunderstorm, tempMax, precipProb, weathercode }.
+ * Holt für jeden Punkt {id, lat, lon} das Tageswetter am gewünschten Datum und
+ * liefert eine Map id -> { sunshineHours, thunderstorm, tempMax, precipProb, weathercode }.
  */
-export async function fetchWeatherBatch(routes, dateISO, { onStatus } = {}) {
+export async function fetchWeatherBatch(points, dateISO, { onStatus } = {}) {
   const result = new Map();
-  const chunks = chunk(routes, CHUNK_SIZE);
+  const chunks = chunk(points, CHUNK_SIZE);
 
   for (let i = 0; i < chunks.length; i++) {
     const group = chunks[i];
-    onStatus?.(`Prüfe Wetter (${i * CHUNK_SIZE + group.length}/${routes.length})...`);
+    onStatus?.(`Prüfe Wetter (${i * CHUNK_SIZE + group.length}/${points.length})...`);
 
     const lats = group.map((r) => r.lat.toFixed(4)).join(",");
     const lons = group.map((r) => r.lon.toFixed(4)).join(",");
@@ -36,19 +42,35 @@ export async function fetchWeatherBatch(routes, dateISO, { onStatus } = {}) {
     const entries = Array.isArray(data) ? data : [data];
 
     entries.forEach((entry, idx) => {
-      const route = group[idx];
-      if (!route || !entry?.daily) return;
+      const point = group[idx];
+      if (!point || !entry?.daily) return;
       const code = entry.daily.weathercode?.[0];
       const sunshineSeconds = entry.daily.sunshine_duration?.[0] ?? 0;
-      result.set(route.id, {
+      const weather = {
         weathercode: code,
         thunderstorm: THUNDERSTORM_CODES.includes(code),
         sunshineHours: Math.round((sunshineSeconds / 3600) * 10) / 10,
         precipProbability: entry.daily.precipitation_probability_max?.[0] ?? null,
         tempMax: entry.daily.temperature_2m_max?.[0] ?? null,
-      });
+      };
+      weather.ampel = scoreDay(weather);
+      result.set(point.id, weather);
     });
   }
 
   return result;
+}
+
+/** Einfacher Ampel-Score aus Gewitter/Sonnenstunden/Niederschlagswahrscheinlichkeit. */
+export function scoreDay(weather) {
+  if (weather.thunderstorm || (weather.precipProbability ?? 0) >= AMPEL_RED_PRECIP_PROB) {
+    return "rot";
+  }
+  if (
+    weather.sunshineHours >= AMPEL_GREEN_MIN_SUNSHINE_HOURS &&
+    (weather.precipProbability ?? 0) < AMPEL_GREEN_MAX_PRECIP_PROB
+  ) {
+    return "gruen";
+  }
+  return "gelb";
 }

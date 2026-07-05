@@ -1,71 +1,56 @@
-const HISTORY_KEY = "hiking-app:history:v1";
+const HISTORY_KEY = "hiking-app:done-v2";
 
 function load() {
   try {
     const raw = localStorage.getItem(HISTORY_KEY);
-    return raw ? JSON.parse(raw) : [];
+    return raw ? JSON.parse(raw) : {};
   } catch {
-    return [];
+    return {};
   }
 }
 
-function save(list) {
+function save(map) {
   try {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(map));
   } catch {
-    // localStorage voll/deaktiviert -> Verlauf geht in dieser Session halt verloren.
+    // localStorage voll/deaktiviert -> Status geht in dieser Session halt verloren.
   }
 }
 
-export function entryKey(routeId, plannedDate) {
-  return `${routeId}|${plannedDate}`;
+/** Map hikeId -> ISO-Datum, an dem die Tour gemacht wurde. */
+export function getDoneMap() {
+  return load();
 }
 
-export function getHistory() {
-  return load().sort((a, b) => b.savedAt - a.savedAt);
+export function isDone(hikeId) {
+  return Boolean(load()[hikeId]);
 }
 
-export function findEntry(routeId, plannedDate) {
-  return load().find((e) => e.routeId === routeId && e.plannedDate === plannedDate) || null;
+export function getDoneDate(hikeId) {
+  return load()[hikeId] || null;
 }
 
-export function addPlanned(route, plannedDate) {
-  const list = load();
-  if (list.some((e) => e.routeId === route.id && e.plannedDate === plannedDate)) {
-    return list; // schon gemerkt
-  }
-  list.push({
-    routeId: route.id,
-    name: route.name,
-    distanceKm: route.distanceKm,
-    ascent: route.ascent,
-    lat: route.lat,
-    lon: route.lon,
-    stationName: route.station?.name ?? null,
-    travelMin: route.travelMin ?? null,
-    sunshineHours: route.weather?.sunshineHours ?? null,
-    plannedDate,
-    status: "geplant",
-    completedDate: null,
-    savedAt: Date.now(),
-  });
-  save(list);
-  return list;
+export function markDone(hikeId, doneDateISO) {
+  const map = load();
+  map[hikeId] = doneDateISO;
+  save(map);
+  return map;
 }
 
-export function markDone(routeId, plannedDate, completedDate) {
-  const list = load();
-  const entry = list.find((e) => e.routeId === routeId && e.plannedDate === plannedDate);
-  if (entry) {
-    entry.status = "gemacht";
-    entry.completedDate = completedDate;
-    save(list);
-  }
-  return list;
+export function unmarkDone(hikeId) {
+  const map = load();
+  delete map[hikeId];
+  save(map);
+  return map;
 }
 
-export function removeEntry(routeId, plannedDate) {
-  const list = load().filter((e) => !(e.routeId === routeId && e.plannedDate === plannedDate));
-  save(list);
-  return list;
+export function exportDone() {
+  return JSON.stringify(load(), null, 2);
+}
+
+export function importDone(json) {
+  const parsed = JSON.parse(json);
+  if (!parsed || typeof parsed !== "object") throw new Error("Ungültiges Format.");
+  save(parsed);
+  return parsed;
 }
