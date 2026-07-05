@@ -147,14 +147,39 @@ async function loadCurated() {
   return JSON.parse(raw);
 }
 
+// Distanz in Metern zwischen zwei Koordinaten (Haversine).
+function distanceMeters(a, b) {
+  const R = 6371000;
+  const toRad = (d) => (d * Math.PI) / 180;
+  const dLat = toRad(b.lat - a.lat);
+  const dLon = toRad(b.lon - a.lon);
+  const s =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(s));
+}
+
 function mergeById(apiHikes, curatedHikes) {
   const byId = new Map();
   // Kuratierte Liste zuerst - dient als Fallback für unvollständige API-Einträge.
   for (const hike of curatedHikes) byId.set(hike.id, hike);
+
+  // API-IDs (msw-...) matchen nie mit den kuratierten Slugs - ohne Warnung
+  // würden dieselben Wanderungen doppelt auftauchen (einmal kuratiert, einmal
+  // von der API). Wir mergen nicht automatisch (Namens-/Ortsabgleich ist zu
+  // fehleranfällig), warnen aber bei Standorten < 500m auseinander.
   for (const hike of apiHikes) {
     if (!hike) continue;
-    const existing = byId.get(hike.id);
-    byId.set(hike.id, existing ? { ...existing, ...compact(hike) } : hike);
+    for (const existing of curatedHikes) {
+      if (distanceMeters(hike.start, existing.start) < 500) {
+        console.warn(
+          `MÖGLICHES DUPLIKAT: API-Eintrag "${hike.name}" (${hike.id}) liegt < 500m von ` +
+            `kuratiertem Eintrag "${existing.name}" (${existing.id}) - manuell prüfen und ` +
+            `ggf. einen der beiden Einträge aus data/hikes.json entfernen.`
+        );
+      }
+    }
+    byId.set(hike.id, hike);
   }
   return [...byId.values()];
 }
