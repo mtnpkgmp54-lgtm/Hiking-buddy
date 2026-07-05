@@ -18,7 +18,7 @@
     "descentM": 300,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/%C3%9Ctliberg",
     "description": null,
     "difficulty": null
   },
@@ -41,7 +41,7 @@
     "descentM": 1300,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Rigi",
     "description": null,
     "difficulty": null
   },
@@ -64,7 +64,7 @@
     "descentM": 450,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Rigi",
     "description": null,
     "difficulty": null
   },
@@ -87,7 +87,7 @@
     "descentM": 750,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Napf_(Berg)",
     "description": null,
     "difficulty": null
   },
@@ -110,7 +110,7 @@
     "descentM": 650,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Creux_du_Van",
     "description": null,
     "difficulty": null
   },
@@ -133,7 +133,7 @@
     "descentM": 750,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Pilatus_(Berg)",
     "description": null,
     "difficulty": null
   },
@@ -156,7 +156,7 @@
     "descentM": 1350,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Schynige_Platte",
     "description": null,
     "difficulty": null
   },
@@ -179,7 +179,7 @@
     "descentM": 950,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/S%C3%A4ntis",
     "description": null,
     "difficulty": null
   },
@@ -202,7 +202,7 @@
     "descentM": 700,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Ch%C3%A4serrugg",
     "description": null,
     "difficulty": null
   },
@@ -225,7 +225,7 @@
     "descentM": 400,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Fronalpstock",
     "description": null,
     "difficulty": null
   },
@@ -248,7 +248,7 @@
     "descentM": 400,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Braunwald_GL",
     "description": null,
     "difficulty": null
   },
@@ -271,7 +271,7 @@
     "descentM": 550,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Flumserberg",
     "description": null,
     "difficulty": null
   },
@@ -294,7 +294,7 @@
     "descentM": 900,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Mythen",
     "description": null,
     "difficulty": null
   },
@@ -317,7 +317,7 @@
     "descentM": 750,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Speer_(Berg)",
     "description": null,
     "difficulty": null
   },
@@ -340,7 +340,7 @@
     "descentM": 1000,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Hoher_Kasten",
     "description": null,
     "difficulty": null
   },
@@ -363,7 +363,7 @@
     "descentM": 500,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Ebenalp",
     "description": null,
     "difficulty": null
   },
@@ -386,7 +386,7 @@
     "descentM": 550,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Pizol",
     "description": null,
     "difficulty": null
   },
@@ -409,7 +409,7 @@
     "descentM": 750,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Weissenstein_SO",
     "description": null,
     "difficulty": null
   },
@@ -432,7 +432,7 @@
     "descentM": 200,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Chasseral",
     "description": null,
     "difficulty": null
   },
@@ -455,7 +455,7 @@
     "descentM": 0,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Niesen",
     "description": null,
     "difficulty": null
   },
@@ -478,7 +478,7 @@
     "descentM": 300,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Hochstuckli",
     "description": null,
     "difficulty": null
   },
@@ -501,7 +501,7 @@
     "descentM": 100,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Bachtel",
     "description": null,
     "difficulty": null
   },
@@ -524,7 +524,7 @@
     "descentM": 480,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/L%C3%A4gern",
     "description": null,
     "difficulty": null
   },
@@ -547,7 +547,7 @@
     "descentM": 100,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Rheinfall",
     "description": null,
     "difficulty": null
   },
@@ -570,7 +570,7 @@
     "descentM": 350,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Melchsee-Frutt",
     "description": null,
     "difficulty": null
   },
@@ -593,7 +593,7 @@
     "descentM": 500,
     "type": "wanderung",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Etzel_(Berg)",
     "description": null,
     "difficulty": null
   },
@@ -616,7 +616,7 @@
     "descentM": 650,
     "type": "via_ferrata",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Gonzen",
     "description": null,
     "difficulty": null
   },
@@ -639,7 +639,7 @@
     "descentM": 300,
     "type": "via_ferrata",
     "imageUrl": null,
-    "sourceUrl": null,
+    "sourceUrl": "https://de.wikipedia.org/wiki/Wolfenschiessen",
     "description": null,
     "difficulty": null
   }
